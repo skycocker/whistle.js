@@ -5,7 +5,12 @@
   </head>
 
   <body>
-    <span id="displayer"></span>
+    
+
+    <script src="whistle.js"></script>
+    <script>
+      whistle.init();
+      document.addEventListener("whistle", function() { alert("whistled!"); }, false);
+    </script>
   </body>
-  <script src="whistle.js"></script>
 </html>

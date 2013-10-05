@@ -1,47 +1,87 @@
-var actx = new webkitAudioContext();
-var audioInput = null,
-    realAudioInput = null,
-    inputPoint = null,
-    analyser = null,
-    disp = null;
+/*
+  whistle.js - whistle detector
+  url/latest source: https://github.com/skycocker/whistle.js
 
-function gotStream(stream) {
-  inputPoint = actx.createGain();
+  Copyright 2013 Michal Siwek
+  Released under the terms of GNU General Public License (version 3 or later) (http://www.gnu.org/licenses/gpl.txt)
+*/
 
-  realAudioInput = actx.createMediaStreamSource(stream);
-  audioInput = realAudioInput;
-  audioInput.connect(inputPoint);
-
-  analyser = actx.createAnalyser();
-  analyser.fftSize = 2048;
+(function(window, document, navigator) {
+  window.requestAnimationFrame = window.requestAnimationFrame ||
+                                 window.msRequestAnimationFrame ||
+                                 window.mozRequestAnimationFrame ||
+                                 window.webkitRequestAnimationFrame;
   
-  inputPoint.connect(analyser);
-
-  zeroGain = actx.createGain();
-  zeroGain.gain.value = 0.0;
-  inputPoint.connect(zeroGain);
-  zeroGain.connect(actx.destination);
+  window.AudioContext = window.AudioContext ||
+                        window.webkitAudioContext;
   
-   
-  updateAnalysers();
-}
+  navigator.getUserMedia = navigator.getUserMedia ||
+                           navigator.webkitGetUserMedia ||
+                           navigator.mozGetUserMedia ||
+                           navigator.msGetUserMedia;
+  
+  var actx = new AudioContext();
+  var audioInput = null,
+      rawAudioInput = null,
+      inputNode = null,
+      analyser = null;
 
-function updateAnalysers() {
-  var freqByteData = new Uint8Array(analyser.frequencyBinCount);
+  var whistleEvent = null;
 
-  analyser.getByteFrequencyData(freqByteData);
+  function Whistle() {
+    this.init = function(whistleEventName) {
+      this.whistleEventName = whistleEventName || "whistle";
 
-  if( (freqByteData[47] > 150) && (freqByteData[48] > 150) && (freqByteData[49] > 150) && (freqByteData[50] > 150) ) {
-    console.log("whistled");
-  } else {
-    window.requestAnimationFrame(updateAnalysers);
+      navigator.getUserMedia({ audio: true }, startStream, function(error) {
+        console.log("error: " + error);
+      });
+
+      whistleEvent = new CustomEvent(
+        this.whistleEventName, {
+          bubbles: true,
+          cancelable: true
+        }
+      );
+    }
   }
-}
 
-window.onload = function() {
-  disp = document.querySelector('#displayer');
-  navigator.webkitGetUserMedia({ audio: true }, gotStream, function(error) {
-    console.log(error);
-  });
-};
+  var whistle = window.whistle = new Whistle();
+  
+  function startStream(stream) {
+    inputNode = actx.createGain();
 
+    rawAudioInput = actx.createMediaStreamSource(stream);
+    audioInput = rawAudioInput;
+    audioInput.connect(inputNode);
+
+    analyser = actx.createAnalyser();
+    analyser.fftSize = 2048;
+
+    inputNode.connect(analyser);
+
+    zeroGain = actx.createGain();
+    zeroGain.gain.value = 0.0;
+    inputNode.connect(actx.destination);
+
+    analyse();
+  }
+
+  function analyse() {
+    var frequencies = new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteFrequencyData(frequencies);
+    
+    var counter = 0,
+        iterations = 0;
+    for(var i=47; i<=50; ++i) {
+      if(frequencies[i] > 150) {
+        ++counter;
+      }
+      ++iterations;
+    }
+    if(counter == iterations) {
+      document.dispatchEvent(whistleEvent);
+    } else {
+      requestAnimationFrame(analyse);
+    }
+  }
+})(window, document, navigator)
