@@ -70,18 +70,9 @@
     var frequencies = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteFrequencyData(frequencies);
     
-    var counter = 0,
-        iterations = 0;
-    for(var i=47; i<=50; ++i) {
-      if(frequencies[i] > 150) {
-        ++counter;
-      }
-      ++iterations;
+    for(var i=25; i<=80; ++i) {
+      if(frequencies[i] > 180) return(document.dispatchEvent(whistleEvent));
     }
-    if(counter == iterations) {
-      document.dispatchEvent(whistleEvent);
-    } else {
-      requestAnimationFrame(analyse);
-    }
+    requestAnimationFrame(analyse);
   }
 })(window, document, navigator)
