@@ -31,6 +31,7 @@
   function Whistle() {
     this.init = function(whistleEventName) {
       this.whistleEventName = whistleEventName || "whistle";
+      this.whistling = null;
 
       navigator.getUserMedia({ audio: true }, startStream, function(error) {
         console.log("error: " + error);
@@ -71,7 +72,12 @@
     analyser.getByteFrequencyData(frequencies);
     
     for(var i=25; i<=80; ++i) {
-      if(frequencies[i] > 250) return(document.dispatchEvent(whistleEvent));
+      if(frequencies[i] > 250) {
+        document.dispatchEvent(whistleEvent);
+        whistle.whistling = true;
+      } else {
+        whistle.whistling = false;
+      }
     }
     requestAnimationFrame(analyse);
   }
