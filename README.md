@@ -1,4 +1,0 @@
-whistle.js
-==========
-
-Whistle detector
