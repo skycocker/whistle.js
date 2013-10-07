@@ -71,7 +71,7 @@
     analyser.getByteFrequencyData(frequencies);
     
     for(var i=25; i<=80; ++i) {
-      if(frequencies[i] == 255) return(document.dispatchEvent(whistleEvent));
+      if(frequencies[i] > 250) return(document.dispatchEvent(whistleEvent));
     }
     requestAnimationFrame(analyse);
   }
