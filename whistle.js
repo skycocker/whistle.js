@@ -32,6 +32,7 @@
     this.init = function(whistleEventName) {
       this.whistleEventName = whistleEventName || "whistle";
       this.whistling = null;
+      this.intensity = null;
 
       navigator.getUserMedia({ audio: true }, startStream, function(error) {
         console.log("error: " + error);
@@ -71,10 +72,11 @@
     var frequencies = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteFrequencyData(frequencies);
     
-    for(var i=25; i<=80; ++i) {
-      if(frequencies[i] > 250) {
+    for(var i=29; i<=80; ++i) {
+      if(frequencies[i] > 150) {
         document.dispatchEvent(whistleEvent);
         whistle.whistling = true;
+        whistle.intensity = i - 29;
       } else {
         whistle.whistling = false;
       }
