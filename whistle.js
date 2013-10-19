@@ -26,13 +26,22 @@
       inputNode = null,
       analyser = null;
 
-  var whistleEvent = null;
+  var whistleEvent = null,
+      whistleReadyEvent = null;
 
   function Whistle() {
-    this.init = function(whistleEventName) {
+    this.init = function(whistleEventName, once, precision) {
       this.whistleEventName = whistleEventName || "whistle";
+      this.once = once || false;
+      
       this.whistling = null;
       this.intensity = null;
+      
+      if(precision == "low") {
+        this.precision = 150;
+      } else {
+        this.precision = 250;
+      }
 
       navigator.getUserMedia({ audio: true }, startStream, function(error) {
         console.log("error: " + error);
@@ -40,6 +49,13 @@
 
       whistleEvent = new CustomEvent(
         this.whistleEventName, {
+          bubbles: true,
+          cancelable: true
+        }
+      );
+
+      whistleReadyEvent = new CustomEvent(
+        'whistleReady', {
           bubbles: true,
           cancelable: true
         }
@@ -65,6 +81,8 @@
     zeroGain.gain.value = 0.0;
     inputNode.connect(actx.destination);
 
+    document.dispatchEvent(whistleReadyEvent);
+    
     analyse();
   }
 
@@ -73,14 +91,16 @@
     analyser.getByteFrequencyData(frequencies);
     
     for(var i=29; i<=80; ++i) {
-      if(frequencies[i] > 150) {
+      if(frequencies[i] > whistle.precision) {
         document.dispatchEvent(whistleEvent);
         whistle.whistling = true;
-        whistle.intensity = i - 29;
+        whistle.intensity = (i - 29) * 2;
       } else {
         whistle.whistling = false;
       }
     }
-    requestAnimationFrame(analyse);
+    if(!whistle.once) {
+      requestAnimationFrame(analyse);
+    }
   }
 })(window, document, navigator)
