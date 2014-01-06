@@ -1,0 +1,16 @@
+.jumbotron {
+  padding-top: 0px;
+  background-color: #fff;
+  text-align: center;
+  color: #ccc;
+}
+ol, ol li {
+  display: inline;
+}
+ol li {
+  color: #737373;
+}
+ol li.done {
+  color: #34FD7E;
+  color: #5BDE8D;
+}

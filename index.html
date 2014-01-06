@@ -1,71 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
+<!doctype html>
+<html>
+<head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="User's whistle detector in pure javascript">
+    <meta name="description" content="A simple javascript whistle detector">
     <meta name="author" content="Michal Siwek">
-    <link rel="shortcut icon" href="../../assets/ico/favicon.png">
 
-    <title>Whistle.js - user's whistle detector in pure javascript</title>
+    <title>whistle.js</title>
 
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
 
-    <link href="jumbotron-narrow.css" rel="stylesheet">
-    <link href="whistle-specific.css" rel="stylesheet">
-
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-      <script src="../../assets/js/html5shiv.js"></script>
-      <script src="../../assets/js/respond.min.js"></script>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
-  </head>
-
-  <body>
-
+</head>
+<body>
+  <div class="navbar navbar-default" role="navigation">
     <div class="container">
-      <div class="header">
-        <h3 class="text-muted">whistle.js</h3>
+      <div class="navbar-header">
+        <a class="navbar-brand" href="http://skycocker.github.io/whistle.js">whistle.js - the pure-javascript whistle analyzer</a>
         <a href="https://github.com/skycocker/whistle.js"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
       </div>
-      
-      <div class="jumbotron">
-        <h1>whistle.js</h1>
-        <p class="lead">Just allow the microphone and, well, whistle.</p>
+    </div>
+  </div>
+
+
+  <div class="container">
+    <div class="jumbotron">
+      <h2>whistle.js</h2>
+      <h2><ol><li>allow the microphone</li> and <li>whistle</li></ol></h2>
+      <canvas id="graph" width="200px" height="200px"></canvas>
+      <p>
+        <img id="flo" src="flo.jpg" height="200px">
+      </p>
+    </div>
+    <div class="row marketing" id="explanation">
+      <div class="col-lg-6">
+        <h3>How does it work?</h3>
+        <p>This is pretty simple. Whistle.js is monitoring certain frequencies, acquired via <code>getUserMedia</code>:</p>
+        <script src="https://gist.github.com/skycocker/6874522.js"></script>
       </div>
-
-      <div class="row marketing">
-        <div class="col-lg-6">
-          <h3>Wow!</h3>
-          <p>Yes!</p>
-
-          <h3>But...how?</h3>
-          <p>Pretty simply, actually. By monitoring certain frequencies, acquired via <code>getUserMedia</code>:</p>
-          <script src="https://gist.github.com/skycocker/6874522.js"></script>
-        </div>
-
-      <div class="footer">
-        <p>&copy; <a href="http://msiwek.com/" target="_"><span class="name"><span class="name-first">Michal</span> Siwek</span></a> 2013</p>
-      </div>
-
-    </div> <!-- /container -->
+    </div>
+  </div> <!-- /container -->
 
 
-    <script src="whistle.js"></script>
-    <script>
-      window.onload = function() {
-        whistle.init();
-
-        document.addEventListener("whistle", function() {
-          document.querySelector('.jumbotron').style.backgroundColor = '#93D8FF';
-          setInterval(function() {
-            if(whistle.whistling) {
-              document.querySelector('.jumbotron').style.backgroundColor = '#93D8FF';
-            } else {
-              document.querySelector('.jumbotron').style.backgroundColor = '#FFF';
-            }
-          }, 10);
-        }, false);
-      }
-    </script>
-  </body>
+  <script src="whistle.js"></script>
+  <script src="engine/note.js"></script>
+  <script src="engine/game.js"></script>
+  <script src="notes.js"></script>
+  <script src="init.js"></script>
+</body>
 </html>
