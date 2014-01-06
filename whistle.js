@@ -11,15 +11,15 @@
                                  window.msRequestAnimationFrame ||
                                  window.mozRequestAnimationFrame ||
                                  window.webkitRequestAnimationFrame;
-  
+
   window.AudioContext = window.AudioContext ||
                         window.webkitAudioContext;
-  
+
   navigator.getUserMedia = navigator.getUserMedia ||
                            navigator.webkitGetUserMedia ||
                            navigator.mozGetUserMedia ||
                            navigator.msGetUserMedia;
-  
+
   var actx = new AudioContext();
   var audioInput = null,
       rawAudioInput = null,
@@ -33,10 +33,10 @@
     this.init = function(whistleEventName, once, precision) {
       this.whistleEventName = whistleEventName || "whistle";
       this.once = once || false;
-      
+
       this.whistling = null;
       this.intensity = null;
-      
+
       if(precision == "low") {
         this.precision = 150;
       } else {
@@ -64,7 +64,7 @@
   }
 
   var whistle = window.whistle = new Whistle();
-  
+
   function startStream(stream) {
     inputNode = actx.createGain();
 
@@ -79,17 +79,17 @@
 
     zeroGain = actx.createGain();
     zeroGain.gain.value = 0.0;
-    inputNode.connect(actx.destination);
+    //inputNode.connect(actx.destination); //uncomment this to get the mic playback from speakers
 
     document.dispatchEvent(whistleReadyEvent);
-    
+
     analyse();
   }
 
   function analyse() {
     var frequencies = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteFrequencyData(frequencies);
-    
+
     for(var i=29; i<=80; ++i) {
       if(frequencies[i] > whistle.precision) {
         document.dispatchEvent(whistleEvent);
