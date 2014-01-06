@@ -1,7 +1,7 @@
 whistle.js
 ==========
 
-User's whistle detector in pure javascript.
+User's whistle detector/analyzer written in pure javascript.
 
 Overview
 --------
@@ -19,17 +19,27 @@ Usage
 
         whistle.init()
 
-3. Set an event handler for the whistle
+3. The `init()` method takes three optional parameters:
+  * `whistleEventName [string]` - by setting this you can specify the name of the event triggered on user's whistle
+  * `once [boolean]` - if set to true, the whistle event will be triggered only at the first time user whistles
+  * `precision [string]` - if set to 'low', the whistle analyser will be more tolerant. Useful if you need to capture the intensity of whistles
+
+4. Set an event handler for the whistle
 
         document.addEventListener("whistle", function() { alert("whistle detected!"); }, false)
 
-4. Optionally check if user is whistling in real time
+5. Optionally check if user is whistling in real time and/or how intense his whistles are
 
         setInterval(function() {
           if(whistle.whistling) {
             console.log("user's whistling at the moment");
+            console.log("intensity: " + whistle.intensity);
           }
         }), 10)
+
+6. You can also check if whistle.js is ready and the microphone prompt has been accepted by user
+
+        document.addEventListener("whistleReady", function() { alert("whistle.js is up and running") }, false)
 
 And that's it! Surprised?
 
