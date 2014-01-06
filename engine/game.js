@@ -9,6 +9,7 @@ function step() {
     if(note.hit && notesHit < notes.length) ++notesHit;
   });
   if(notesHit == notes.length && flo.style.display == 'none') {
+    graph.style.float = 'left';
     flo.style.display = 'inline-block';
     explanation.style.display = 'block';
   } else {
